@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG Class and ID Randomizer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      h1 {
+        text-align: center;
+        color: #2d3748;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .input-section {
+        margin-bottom: 30px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #4a5568;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 200px;
+        padding: 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        resize: vertical;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      input[type='checkbox'] {
+        width: 18px;
+        height: 18px;
+        accent-color: #667eea;
+      }
+
+      input[type='number'] {
+        width: 80px;
+        padding: 8px 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      button {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .output-section {
+        margin-top: 30px;
+      }
+
+      .stats {
+        background: #f7fafc;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .stat {
+        color: #4a5568;
+        font-weight: 500;
+      }
+
+      .stat strong {
+        color: #2d3748;
+      }
+
+      .preview {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+      }
+
+      .preview h3 {
+        margin-bottom: 15px;
+        color: #495057;
+      }
+
+      .preview-content {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .svg-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        max-width: 300px;
+        max-height: 300px;
+        overflow: hidden;
+      }
+
+      .error {
+        background: #fed7d7;
+        color: #c53030;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .preview-content {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SVG Class & ID Randomizer</h1>
+
+      <div class="input-section">
+        <label for="svgInput">Paste your SVG code:</label>
+        <textarea id="svgInput" placeholder="<svg>...</svg>"></textarea>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <input type="checkbox" id="randomizeClasses" checked />
+          <label for="randomizeClasses">Randomize Classes</label>
+        </div>
+
+        <div class="control-group">
+          <input type="checkbox" id="randomizeIds" checked />
+          <label for="randomizeIds">Randomize IDs</label>
+        </div>
+
+        <div class="control-group">
+          <label for="hashLength">Hash Length:</label>
+          <input type="number" id="hashLength" value="8" min="4" max="16" />
+        </div>
+
+        <button onclick="randomizeSVG()">Randomize SVG</button>
+      </div>
+
+      <div class="output-section">
+        <div id="stats" class="stats" style="display: none"></div>
+        <div id="error" class="error" style="display: none"></div>
+
+        <label for="svgOutput">Randomized SVG:</label>
+        <textarea id="svgOutput" readonly></textarea>
+
+        <div id="preview" class="preview" style="display: none">
+          <h3>Preview Comparison:</h3>
+          <div class="preview-content">
+            <div>
+              <h4>Original</h4>
+              <div id="originalPreview" class="svg-container"></div>
+            </div>
+            <div>
+              <h4>Randomized</h4>
+              <div id="randomizedPreview" class="svg-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function generateRandomHash(length) {
+        const array = new Uint8Array(length);
+        window.crypto.getRandomValues(array);
+        return Array.from(array, (b) => b.toString(16).padStart(2, '0'))
+          .join('')
+          .slice(0, length);
+      }
+
+      function randomizeSVG() {
+        const svgInput = document.getElementById('svgInput').value.trim();
+        const randomizeClasses =
+          document.getElementById('randomizeClasses').checked;
+        const randomizeIds = document.getElementById('randomizeIds').checked;
+        const hashLength = parseInt(
+          document.getElementById('hashLength').value
+        );
+
+        const errorDiv = document.getElementById('error');
+        const statsDiv = document.getElementById('stats');
+        const outputTextarea = document.getElementById('svgOutput');
+        const previewDiv = document.getElementById('preview');
+
+        // Clear previous results
+        errorDiv.style.display = 'none';
+        statsDiv.style.display = 'none';
+        previewDiv.style.display = 'none';
+        outputTextarea.value = '';
+
+        if (!svgInput) {
+          showError('Please paste SVG code to randomize.');
+          return;
+        }
+
+        try {
+          let modifiedSVG = svgInput;
+          const mappings = { classes: {}, ids: {} };
+          let classCount = 0,
+            idCount = 0;
+
+          // Find and replace class names
+          if (randomizeClasses) {
+            const classMatches = [
+              ...modifiedSVG.matchAll(/class\s*=\s*["']([^"']+)["']/g),
+            ];
+            const uniqueClasses = new Set();
+
+            classMatches.forEach((match) => {
+              const classes = match[1].split(/\s+/);
+              classes.forEach((cls) => {
+                if (cls.trim()) uniqueClasses.add(cls.trim());
+              });
+            });
+
+            uniqueClasses.forEach((cls) => {
+              const randomHash = generateRandomHash(hashLength);
+              const newClassName = `cls-${randomHash}`;
+              mappings.classes[cls] = newClassName;
+
+              // Replace in class attributes
+              const classRegex = new RegExp(`\\b${cls}\\b`, 'g');
+              modifiedSVG = modifiedSVG.replace(
+                /class\s*=\s*["']([^"']+)["']/g,
+                (match, classStr) => {
+                  const newClassStr = classStr.replace(
+                    classRegex,
+                    newClassName
+                  );
+                  return match.replace(classStr, newClassStr);
+                }
+              );
+
+              // Replace in CSS selectors
+              const cssClassRegex = new RegExp(`\\.${cls}\\b`, 'g');
+              modifiedSVG = modifiedSVG.replace(
+                cssClassRegex,
+                `.${newClassName}`
+              );
+
+              classCount++;
+            });
+          }
+
+          // Find and replace IDs
+          if (randomizeIds) {
+            const idMatches = [
+              ...modifiedSVG.matchAll(/id\s*=\s*["']([^"']+)["']/g),
+            ];
+            const uniqueIds = new Set();
+
+            idMatches.forEach((match) => {
+              uniqueIds.add(match[1]);
+            });
+
+            uniqueIds.forEach((id) => {
+              const randomHash = generateRandomHash(hashLength);
+              const newId = `id-${randomHash}`;
+              mappings.ids[id] = newId;
+
+              // Replace id attributes
+              const idRegex = new RegExp(`id\\s*=\\s*["']${id}["']`, 'g');
+              modifiedSVG = modifiedSVG.replace(idRegex, `id="${newId}"`);
+
+              // Replace references (url(#id), href="#id", etc.)
+              const refRegex = new RegExp(
+                `(url\\(#|href\\s*=\\s*["']#|#)${id}\\b`,
+                'g'
+              );
+              modifiedSVG = modifiedSVG.replace(refRegex, (match, prefix) => {
+                return `${prefix}${newId}`;
+              });
+
+              // Replace CSS selectors
+              const cssIdRegex = new RegExp(`#${id}\\b`, 'g');
+              modifiedSVG = modifiedSVG.replace(cssIdRegex, `#${newId}`);
+
+              idCount++;
+            });
+          }
+
+          // Display results
+          outputTextarea.value = modifiedSVG;
+
+          // Show statistics
+          statsDiv.innerHTML = `
+                    <div class="stat">Classes randomized: <strong>${classCount}</strong></div>
+                    <div class="stat">IDs randomized: <strong>${idCount}</strong></div>
+                    <div class="stat">Hash length: <strong>${hashLength}</strong></div>
+                `;
+          statsDiv.style.display = 'flex';
+
+          // Show preview if it's valid SVG
+          if (modifiedSVG.includes('<svg')) {
+            document.getElementById('originalPreview').innerHTML = svgInput;
+            document.getElementById('randomizedPreview').innerHTML =
+              modifiedSVG;
+            previewDiv.style.display = 'block';
+          }
+        } catch (error) {
+          showError(`Error processing SVG: ${error.message}`);
+        }
+      }
+
+      function showError(message) {
+        const errorDiv = document.getElementById('error');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      }
+
+      // Auto-resize textareas
+      //   document.querySelectorAll('textarea').forEach((textarea) => {
+      //     textarea.addEventListener('input', function () {
+      //       this.style.height = 'auto';
+      //       this.style.height = Math.max(200, this.scrollHeight) + 'px';
+      //     });
+      //   });
+
+      // Example SVG for testing
+      document.getElementById(
+        'svgInput'
+      ).value = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .circle-style { fill: #ff6b6b; }
+    .rect-style { fill: #4ecdc4; }
+    #special-text { font-family: Arial; font-size: 14px; }
+  </style>
+  
+  <defs>
+    <linearGradient id="myGradient">
+      <stop offset="0%" stop-color="#ff6b6b"/>
+      <stop offset="100%" stop-color="#4ecdc4"/>
+    </linearGradient>
+  </defs>
+  
+  <circle class="circle-style" cx="50" cy="50" r="30"/>
+  <rect class="rect-style" x="100" y="20" width="60" height="60"/>
+  <text id="special-text" x="20" y="120" fill="url(#myGradient)">Hello SVG!</text>
+  <use href="#special-text" x="0" y="30"/>
+</svg>`;
+    </script>
+  </body>
+</html>
